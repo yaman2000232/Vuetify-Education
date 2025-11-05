@@ -6,6 +6,7 @@ import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
 import 'unfonts.css'
 import { registerPlugins } from '@/plugins'
+import 'leaflet/dist/leaflet.css'
 
 
 import { createPinia } from 'pinia'
