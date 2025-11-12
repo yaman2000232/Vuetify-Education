@@ -256,10 +256,22 @@
     </v-card>
 
 
+      <div>
+    <!-- Skeleton shown while loading -->
+    <v-skeleton-loader
+      v-if="teachersStore.loading"
+      type="table"
+      class="mx-auto"
+      max-width="100%"
+    />
+
+
 
     <!-- Data Table -->
 
     <v-data-table
+
+    v-else
 
       :headers="headers"
 
@@ -314,6 +326,8 @@
       </template>
 
     </v-data-table>
+
+    </div>
 
 
 

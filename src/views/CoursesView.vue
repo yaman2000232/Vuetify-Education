@@ -154,7 +154,17 @@
       </v-toolbar>
     </v-card>
 
+      <div>
+    <!-- Skeleton shown while loading -->
+    <v-skeleton-loader
+      v-if="coursesStore.loading"
+      type="table"
+      class="mx-auto"
+      max-width="100%"
+    />
+
   <v-data-table
+  v-eles
   :headers="headers"
   :items="coursesStore.courses"
   class="v-data-table-custom"
@@ -277,6 +287,7 @@
     </template>
   </template>
 </v-data-table>
+</div>
 
 
 
@@ -301,15 +312,26 @@
           <v-btn variant="outlined" color="grey" @click="cancelDeletion" class="px-6">
             Cancel
           </v-btn>
-          <v-btn
+           <v-btn
+
             color="red"
+
             variant="tonal"
+
             class="px-6"
+
             @click="confirmDeletion"
+
+            :loading="loading"
+
           >
+
             <v-icon start>mdi-delete</v-icon>
+
             Delete
+
           </v-btn>
+
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -369,7 +391,21 @@
     <v-card-actions>
       <v-spacer />
       <v-btn variant="outlined" @click="cancelEdit">Cancel</v-btn>
-      <v-btn color="primary" @click="saveEdit">Save</v-btn>
+      <v-btn
+  color="primary"
+  variant="tonal"
+  :disabled="savingEdit"
+  @click="saveEdit"
+>
+  <template v-if="savingEdit">
+    <v-progress-circular indeterminate color="white" size="20" class="mr-2" />
+    Saving...
+  </template>
+  <template v-else>
+    Save
+  </template>
+</v-btn>
+
     </v-card-actions>
   </v-card>
 </v-dialog>
@@ -389,12 +425,15 @@ import { useTeachersStore } from '@/store/teachers'
 export default {
   data() {
     return {
+      savingEdit:false,
        role: localStorage.getItem('role') || '',
 
      
 
 
       dialog: false,
+      loading:false,
+
       confirmDialogEdit: false,
       confirmDialog: false,
       toDeleteId: null,

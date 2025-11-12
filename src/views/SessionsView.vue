@@ -82,7 +82,17 @@
       </v-toolbar>
     </v-card>
 
+      <div>
+    <!-- Skeleton shown while loading -->
+    <v-skeleton-loader
+      v-if="sessionStore.loading"
+      type="table"
+      class="mx-auto"
+      max-width="100%"
+    />
+
     <v-data-table
+     v-else
       :headers="headers"
       :items="filteredSessions"
       class="v-data-table-custom"
@@ -125,6 +135,7 @@
         </v-tooltip>
       </template>
     </v-data-table>
+    </div>
 
     <v-dialog v-model="confirmDialog" max-width="600">
       <v-card class="pa-4">
@@ -170,7 +181,21 @@
         <v-card-actions>
           <v-spacer/>
           <v-btn variant="outlined" @click="cancelEdit">Cancel</v-btn>
-          <v-btn color="primary" @click="saveEdit">Save</v-btn>
+           <v-btn
+  color="primary"
+  variant="tonal"
+  :disabled="savingEdit"
+  @click="saveEdit"
+>
+  <template v-if="savingEdit">
+    <v-progress-circular indeterminate color="white" size="20" class="mr-2" />
+    <!-- Saving... -->
+  </template>
+  <template v-else>
+    Save
+  </template>
+</v-btn>
+
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -186,6 +211,7 @@ export default {
     return {
         
       dialog: false,
+        savingEdit:false,
       confirmDialogEdit: false,
       confirmDialog: false,
       toDeleteId: null,
@@ -277,13 +303,22 @@ export default {
   },
 
   async saveEdit() {
+     this.savingEdit = true
     const update = {
       title: this.editSession.title,
       duration: this.editSession.duration,
       courseId: this.editSession.courseId
     }
-    await this.sessionStore.updateSessionFromApi(this.editSession.id, update)
-    this.confirmDialogEdit = false
+    try{
+      await this.sessionStore.updateSessionFromApi(this.editSession.id, update)
+      this.confirmDialogEdit = false
+    }
+    catch{
+      console.error(' Failed to save edit:', error)
+        alert('Failed to update student. Please try again.')
+    }finally{
+         this.savingEdit = false
+      }
   }
 },
 

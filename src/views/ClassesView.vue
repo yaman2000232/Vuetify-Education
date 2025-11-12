@@ -1,88 +1,110 @@
 <template>
   <div>
-    <v-card height="75" elevation="0" class="bg-white">
-      <v-toolbar extended elevation="0" class="bg-white">
-        <v-toolbar-title>ClassRoom Management</v-toolbar-title>
+ <v-card elevation="0" class="bg-white">
+  <v-toolbar flat class="bg-white" height="auto">
+    <v-container fluid>
+      <v-row align="center" justify="space-between" class="flex-wrap">
 
-        <template v-slot:append>
-          <v-text-field
-            class="mx-auto px-2 text-h6"
-            style="width: 300px"
-            v-model="searchText"
-            prepend-inner-icon="mdi-magnify"
-            placeholder="Search by Title"
-            variant="outlined"
-            hide-details
-            density="comfortable"
-          />
+        <v-col cols="12" md="3" class="d-flex align-center">
+          <v-toolbar-title class="text-h6 font-weight-bold">
+            ClassRoom Management
+          </v-toolbar-title>
+        </v-col>
 
-          <v-select
-            class="mx-auto px-2 mt-5"
-            width="300px"
-            v-model="selectedProjector"
-            :items="projectorOptions"
-            label="Projector Status"
-            placeholder="Filter by projector"
-            clearable
-            variant="outlined"
-            density="comfortable"
-          />
+        <v-col cols="12" md="9">
+          <v-row align="center" justify="end" class="flex-wrap" dense>
 
-          <div class="pa-4 text-center">
-            <v-dialog v-model="dialog" max-width="600">
-              <template v-slot:activator="{ props: activatorProps }">
-                <v-btn
-                  class="text-none font-weight-regular"
-                  prepend-icon="mdi-plus-box-multiple"
-                  text
-                  variant="tonal"
-                  v-bind="activatorProps"
-                >
-                  Add a ClassRoom
-                </v-btn>
-              </template>
+<v-col cols="12" sm="6" md="4" class="d-flex align-center py-2">
+  <v-text-field
+    v-model="searchText"
+    prepend-inner-icon="mdi-magnify"
+    placeholder="Search by Title"
+    variant="outlined"
+    hide-details
+    density="comfortable"
+    class="w-100"
+  />
+</v-col>
 
-              <v-card title="New ClassRoom">
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12">
-                        <v-text-field
-                          v-model="newClass.title"
-                          label="ClassRoom Title"
-                          prepend-icon="mdi-tag-text"
-                        />
-                      </v-col>
+<v-col cols="12" sm="6" md="4" class="d-flex align-center mt-5">
+  <v-select
+    v-model="selectedProjector"
+    :items="projectorOptions"
+    label="Projector Status"
+    placeholder="Filter by projector"
+    clearable
+    variant="outlined"
+    density="comfortable"
+    class="w-100"
+  />
+</v-col>
 
-                      <v-col cols="12">
-                        <v-switch
-                          v-model="newClass.hasProjector"
-                          label="Has Projector"
-                          inset
-                          color="blue"
-                          :true-value="true"
-                          :false-value="false"
-                        />
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
 
-                <v-divider></v-divider>
+            <v-col cols="12" sm="6" md="4" class="d-flex align-center justify-end">
+              <v-btn
+                class="text-none font-weight-regular"
+                prepend-icon="mdi-plus-box-multiple"
+                variant="tonal"
+                @click="dialog = true"
+              >
+                Add a ClassRoom
+              </v-btn>
+            </v-col>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn text variant="plain" @click="dialog = false">Close</v-btn>
-                  <v-btn color="primary" text variant="tonal" @click="AddClassHere">Add</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </div>
-        </template>
-      </v-toolbar>
+          </v-row>
+        </v-col>
+
+      </v-row>
+    </v-container>
+  </v-toolbar>
+
+  <v-dialog v-model="dialog" max-width="600">
+    <v-card>
+      <v-card-title>New ClassRoom</v-card-title>
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                v-model="newClass.title"
+                label="ClassRoom Title"
+                prepend-icon="mdi-tag-text"
+              />
+            </v-col>
+            <v-col cols="12">
+              <v-switch
+                v-model="newClass.hasProjector"
+                label="Has Projector"
+                inset
+                color="blue"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-divider />
+      <v-card-actions>
+        <v-spacer />
+        <v-btn text variant="plain" @click="dialog = false">Close</v-btn>
+        <v-btn color="primary" variant="tonal" @click="AddClassHere">Add</v-btn>
+      </v-card-actions>
     </v-card>
+  </v-dialog>
+</v-card>
+
+
+    <div>
+
+      <v-skeleton-loader
+      v-if="classesStore.loading"
+      type="table"
+      class="mx-auto"
+      max-width="100%"
+      />
+        
 
     <v-data-table
+    v-else
       :headers="headers"
       :items="filteredClasses"
       class="v-data-table-custom"
@@ -127,6 +149,7 @@
         </v-tooltip>
       </template>
     </v-data-table>
+    </div>
 
     <v-dialog v-model="confirmDialog" max-width="600">
       <v-card class="pa-4">

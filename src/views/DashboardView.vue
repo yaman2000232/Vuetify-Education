@@ -16,12 +16,18 @@
       <v-icon>mdi-cog-outline</v-icon>
     </v-btn>
 
-    <v-btn to="/login" color="grey-dark-1" variant="tonal" class="ml-2">
-      {{ $t('login') }}
-    </v-btn>
+    
   </v-app-bar>
 
+  <div v-if="loading">
+  <v-skeleton-loader
+    type="article, card, table"
+    class="mx-auto"
+    max-width="100%"
+  />
+</div>
 
+<div v-else>
    <v-container fluid>
     <v-row>
       <v-col cols="12" md="2">
@@ -148,6 +154,7 @@
   </v-row>
 
   </v-container>
+  </div>
 
 
 
@@ -168,6 +175,7 @@ export default {
   name: "DashboardCards",
   data() {
     return {
+      loading:true,
       role: localStorage.getItem('role'),
       stats: {
         students: 120,
@@ -243,7 +251,13 @@ export default {
         },
       },
     }
-  } 
+  } ,
+  mounted() {
+  setTimeout(() => {
+    this.loading = false
+  }, 2000) // simulate loading delay
+}
+
 }
 </script>
 

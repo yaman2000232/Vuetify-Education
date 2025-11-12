@@ -1,4 +1,5 @@
 <template>
+  
   <div>
     <v-card height="75" elevation="0" class="bg-white">
       <v-toolbar extended elevation="0" class="bg-white">
@@ -156,7 +157,21 @@
     <v-card-actions>
       <v-spacer />
       <v-btn text="Cancel" variant="plain" @click="cancelEdit"></v-btn>
-      <v-btn color="primary" text="Save" variant="tonal" @click="saveEdit"></v-btn>
+      <v-btn
+  color="primary"
+  variant="tonal"
+  :disabled="savingEdit"
+  @click="saveEdit"
+>
+  <template v-if="savingEdit">
+    <v-progress-circular indeterminate color="white" size="20" class="mr-2" />
+    <!-- Saving... -->
+  </template>
+  <template v-else>
+    Save
+  </template>
+</v-btn>
+
     </v-card-actions>
   </v-card>
 </v-dialog>
@@ -198,7 +213,20 @@
   </v-card>
 </v-dialog>
 
+  <div>
+    <!-- Skeleton shown while loading -->
+    <v-skeleton-loader
+      v-if="studentsStore.loading"
+      type="table"
+      class="mx-auto"
+      max-width="100%"
+    />
+
+
+
+
 <v-data-table
+  v-else
   :headers="headers"
   :items="studentsStore.students"
   class="v-data-table-clean-students"
@@ -248,6 +276,7 @@
 </v-data-table>
 
   </div>
+   </div>
 </template>
 
 <script>
@@ -263,6 +292,7 @@ export default {
       confirmDialogEdit: false,
       confirmDialog: false,
       toDeleteId: null,
+      savingEdit:false,
 
       searchQuery: '',
 
@@ -414,7 +444,7 @@ export default {
       if (!this.editStudent.firstName || !this.editStudent.lastName) {
         return alert('First name and last name are required.')
       }
-
+       this.savingEdit = true
       const update = {
         firstName: this.editStudent.firstName,
         lastName: this.editStudent.lastName,
@@ -433,6 +463,8 @@ export default {
       } catch (error) {
         console.error(' Failed to save edit:', error)
         alert('Failed to update student. Please try again.')
+      }finally{
+         this.savingEdit = false
       }
     },
 
