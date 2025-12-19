@@ -15,8 +15,13 @@ import SessionsView from '@/views/SessionsView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import AttView from '@/views/AttView.vue'
 import LandingPage from '@/views/LandingPage.vue'
+import Register from '@/views/Register.vue'
 
 const routes = [
+    {
+        path: '/register',
+    component: Register,
+    },
   {
     path: '/login',
     component: LoginView,
@@ -38,6 +43,7 @@ const routes = [
       { path: 'sessions', component: SessionsView, meta: { role: ['ORGANIZATION','TEACHER'] } },
       { path: 'courses', component: CoursesView, meta: { role: ['ORGANIZATION','TEACHER'] } },
       { path: 'settings', component: SettingsView, meta: { role: ['ORGANIZATION','TEACHER'] } },
+      { path: 'register', component: Register, meta: { role: ['ORGANIZATION','TEACHER'] } },
       { path: 'att', component: AttView, meta: { role: ['ORGANIZATION'] } },
     ],
   },

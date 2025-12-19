@@ -47,7 +47,7 @@
                 variant="tonal"
                 @click="dialog = true"
               >
-                Add a ClassRoom
+                Add a ClassRoom yaman
               </v-btn>
             </v-col>
 

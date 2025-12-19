@@ -30,6 +30,26 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async register(name, email, password) {
+      console.log(' Attempting register with data:', name, email, password)
+
+      const res = await fetch('https://school-barakah.vercel.app/auth/organization/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      })
+
+      const data = await res.json()
+      console.log(' Register API response received:', data)
+
+      if (data.message === 'Organization registered successfully') {
+        console.log(' Registration successful.')
+        return true
+      } else {
+        throw new Error(data.message || 'Register failed')
+      }
+    },
+
     logout() {
       console.log(' Logging out...')
       this.token = null
